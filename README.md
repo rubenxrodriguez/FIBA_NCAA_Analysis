@@ -572,6 +572,211 @@ The SRS adjustments also allow exploration of:
 * power conference suppression effects
 * elite team opportunity costs
 
+
+---
+## Modeling and Predictive Analysis
+
+After constructing the merged international-to-NCAA dataset, the project moved into a predictive modeling stage designed to answer two major questions:
+
+1. **Can international youth statistics predict whether a player reaches Division I basketball?**
+2. **Can those statistics estimate the eventual level of NCAA impact a player achieves?**
+
+To explore these questions, the project built both:
+
+* **classification models**
+* **regression models**
+
+using multiple feature configurations.
+
+---
+
+# Classification Modeling
+
+The classification task focused on predicting:
+
+```text
+made_d1
+```
+
+Where:
+
+* `1` = player eventually appeared in NCAA Division I basketball
+* `0` = player did not appear in Division I
+
+The primary goal was not maximizing raw accuracy.
+
+Instead, the project intentionally prioritized:
+
+> **recall optimization**
+
+This decision reflects a real scouting philosophy:
+
+> Missing a future Division I player is often more costly than incorrectly flagging a non-D1 player as promising.
+
+In practical terms:
+
+* false positives are acceptable
+* false negatives are much more damaging
+
+Because of this, the classification pipeline emphasized models capable of identifying as many future D1 players as possible, even if precision declined.
+
+---
+
+# Recall-Optimized Classification
+
+The recall-focused classifier attempted to maximize:
+
+```text
+True Positive Rate
+```
+
+rather than overall accuracy.
+
+This produced several important observations:
+
+* many future NCAA players did not dominate efficiency metrics internationally
+* developmental projection is noisy
+* rebounding and scoring volume translated more consistently than shooting efficiency
+* raw production often mattered more than advanced efficiency indicators
+
+The recall-focused approach aligns closely with real-world recruiting behavior:
+
+* coaches would rather investigate additional prospects
+* than completely overlook a future contributor
+
+This makes recall optimization particularly valuable for scouting-oriented systems.
+
+---
+
+# Regression Modeling
+
+The regression task attempted to predict long-term NCAA impact using continuous outcome variables such as:
+
+* `PER_career`
+* `PER_best`
+* `league_adj_best`
+
+Rather than treating success as binary, regression modeling explored:
+
+> how strongly international production correlates with eventual collegiate impact level.
+
+The regression models revealed several important structural patterns:
+
+* NCAA impact distributions are heavily right-skewed
+* most players cluster in low-to-mid impact ranges
+* elite outcomes are comparatively rare
+* developmental variance remains extremely high
+
+Despite this noise, meaningful predictive signal still emerged.
+
+---
+
+# Context-Optimized Modeling
+
+One of the most important findings in the project came from comparing two model structures:
+
+## Model A — Stats + Context
+
+Included:
+
+* FIBA statistical production
+* country information
+* age classifications
+* tournament context
+* competition/environment variables
+
+## Model B — Stats Only
+
+Included only:
+
+* raw FIBA box score statistics
+* efficiency metrics
+* counting statistics
+
+---
+
+# Major Finding: Context Matters
+
+Across both classification and regression tasks:
+
+> Model A consistently outperformed Model B.
+
+This was one of the strongest conclusions of the entire project.
+
+The results suggest that:
+
+* basketball development is environment-dependent
+* player evaluation cannot rely on raw statistics alone
+* country and competition context meaningfully affect translation patterns
+
+The feature importance analysis reinforced this conclusion.
+
+Variables such as:
+
+* country
+* team strength
+* contextual competition indicators
+
+often carried substantial predictive value alongside player production metrics.
+
+---
+
+# What the Models Actually Learned
+
+One of the more surprising findings was that:
+
+> efficiency metrics were not the dominant predictors of future NCAA success.
+
+Metrics such as:
+
+* FG%
+* PPP
+* FT%
+
+were generally less influential than expected.
+
+Instead, the models consistently prioritized:
+
+* scoring volume
+* rebounding
+* overall involvement
+* possession participation
+
+Across both regression and classification pipelines, variables such as:
+
+* `PTS`
+* `TOT_REB`
+
+repeatedly emerged as the strongest predictors.
+
+This suggests that:
+
+> scalable production traits may translate more reliably than tournament-level efficiency alone.
+
+---
+
+# Interpreting the Results
+
+The models are not deterministic forecasting systems.
+
+They cannot perfectly identify future NCAA stars.
+
+Instead, they function more effectively as:
+
+* probabilistic evaluators
+* archetype detectors
+* contextual translation tools
+
+The project ultimately suggests that international youth basketball evaluation works best when combining:
+
+1. production
+2. environment
+3. developmental context
+4. competition strength
+5. long-term translation modeling
+
+rather than relying on any single statistic in isolation.
+
 ---
 
 # Important Limitations
