@@ -10,7 +10,6 @@ Every summer, FIBA youth tournaments showcase hundreds of players from around th
 
 The challenge is that international scouting environments are noisy:
 
-* Different countries play different styles
 * Roles vary drastically
 * Competition levels fluctuate
 * Small sample sizes distort production
@@ -19,7 +18,7 @@ The challenge is that international scouting environments are noisy:
 
 This project attempts to bridge that gap by building a large merged dataset connecting:
 
-1. **FIBA youth tournament performance**
+1. **FIBA youth tournament performance [U16,U17,U18,U19,U20]**
 2. **NCAA career outcomes**
 3. **Team and conference strength adjustments**
 4. **Weighted developmental scoring systems**
@@ -30,7 +29,6 @@ Instead, the project aims to explore:
 
 * developmental archetypes
 * translation patterns
-* role-based success paths
 * international production signals
 * NCAA environment effects
 * and the relationship between youth efficiency and long-term collegiate impact
@@ -68,6 +66,7 @@ ROLE
 COUNTRY
 FIBA_CLASS
 FIBA_YEAR
+# FIBA STATS
 POSS
 PTS
 PPP
@@ -82,6 +81,7 @@ FT_ATT
 FT%
 STL_BLK
 AST_TO
+# from here on stats are NCAA
 PTS/G_career
 AST_career
 TRB_career
@@ -150,6 +150,8 @@ Across countries such as:
 * France
 * Spain
 * Australia
+* New Zealand
+* Serbia
 * and others
 
 For each player, the scraper extracts:
@@ -165,42 +167,20 @@ For each player, the scraper extracts:
 * steal/block combinations
 * assist-to-turnover ratios
 
-The scraper also generates a stable hashed player ID:
-
-```python
-def generate_player_id(name, country, year):
-    key = f"{name.strip().lower()}_{country.strip().lower()}_{year}"
-    return hashlib.md5(key.encode()).hexdigest()
-```
-
-This prevents duplicate identity collisions across tournaments and seasons.
-
 The resulting international profile attempts to capture not just volume production, but efficiency, offensive role, and stylistic tendencies.
 
 ---
 
 # Why Synergy Data Matters
 
-Traditional FIBA box scores alone are often incomplete.
-
 Synergy provides several advantages:
 
 * possession-based normalization
 * efficiency metrics
 * role context
-* offensive involvement
 * scalable tournament scraping
 
 This allows the dataset to move beyond simplistic “points per game” evaluation.
-
-For example:
-
-* two players may average identical scoring numbers
-* but vastly different possession efficiency
-* turnover profiles
-* and offensive creation burden
-
-That distinction becomes extremely important when evaluating future NCAA translation.
 
 ---
 
@@ -235,15 +215,12 @@ The script then parses:
 * career rows
 * conference identifiers
 * team affiliations
-* advanced stat components
 
 ---
 
 # Simplified PER Calculation
 
-One major challenge in NCAA translation analysis is creating a universal impact metric that works across all players.
-
-The project uses a simplified PER-inspired formula:
+Note, the project uses a simplified PER-inspired formula:
 
 ```python
 (
@@ -254,51 +231,9 @@ The project uses a simplified PER-inspired formula:
 ) / G
 ```
 
-This metric rewards:
-
-* scoring
-* creation
-* rebounding
-* defensive events
-
-while penalizing:
-
-* turnovers
-* inefficiency
-
-The implementation appears directly in the scraper:
-
-```python
-def calculate_per(row):
-```
-
-
-
-This is intentionally not identical to NBA PER.
-
-Instead, it acts as a lightweight, interpretable all-in-one production metric suitable for large-scale NCAA comparisons.
-
 ---
 
 # Parsing NCAA Career Histories
-
-Sports-Reference pages are inconsistent.
-
-Several edge cases required custom handling:
-
-* missing position columns
-* inconsistent “Career” rows
-* team naming mismatches
-* conference formatting issues
-* duplicate school naming conventions
-
-Examples include:
-
-* `"State"` vs `"St."`
-* `"Eastern Washington"` naming differences
-* malformed table spacing
-
-The scraper includes extensive parsing logic to standardize these cases before merging.
 
 This stage ultimately produces:
 
@@ -343,8 +278,6 @@ This becomes the foundation for the weighted scoring pipeline.
 
 # Stage 3 — Weighted Score Construction
 
-The weighted score system is one of the most important components of the project.
-
 The objective:
 
 > Reward players who produced efficiently against stronger NCAA competition while maintaining meaningful sample sizes.
@@ -379,7 +312,7 @@ team_strength = 0.35 + 0.65 * (pct ** 2)
 
 This creates several important behaviors:
 
-### 1. Efficiency Matters Most
+### 1. Production Matters Most
 
 A highly productive player receives a strong base score.
 
@@ -530,50 +463,6 @@ Questions such as:
 * Which age groups correlate most strongly with NCAA success?
 
 ---
-
-## Country-Level Pipelines
-
-The project can compare developmental systems across countries:
-
-* Serbia
-* Canada
-* France
-* Spain
-* Australia
-* Brazil
-* and others
-
-Potential questions include:
-
-* Which countries produce the most NCAA-ready guards?
-* Which systems emphasize efficiency?
-* Which nations overperform relative to recruiting visibility?
-
----
-
-## Role-Based Translation
-
-Because the dataset includes role information and efficiency indicators, it can analyze:
-
-* creators vs finishers
-* shooters vs initiators
-* low-usage efficiency players
-* turnover-heavy primary handlers
-* rebounding specialists
-
----
-
-## NCAA Environment Effects
-
-The SRS adjustments also allow exploration of:
-
-* conference inflation
-* mid-major translation
-* power conference suppression effects
-* elite team opportunity costs
-
-
----
 ## Modeling and Predictive Analysis
 
 After constructing the merged international-to-NCAA dataset, the project moved into a predictive modeling stage designed to answer two major questions:
@@ -689,7 +578,6 @@ Included:
 
 Included only:
 
-* raw FIBA box score statistics
 * efficiency metrics
 * counting statistics
 
@@ -705,7 +593,6 @@ This was one of the strongest conclusions of the entire project.
 
 The results suggest that:
 
-* basketball development is environment-dependent
 * player evaluation cannot rely on raw statistics alone
 * country and competition context meaningfully affect translation patterns
 
@@ -714,8 +601,6 @@ The feature importance analysis reinforced this conclusion.
 Variables such as:
 
 * country
-* team strength
-* contextual competition indicators
 
 often carried substantial predictive value alongside player production metrics.
 
@@ -729,7 +614,7 @@ One of the more surprising findings was that:
 
 Metrics such as:
 
-* FG%
+* eFG%
 * PPP
 * FT%
 
@@ -802,7 +687,7 @@ Some:
 * remain overseas
 * play professionally
 * enter JUCO systems
-* or never appear in Sports-Reference
+* or make a NCAA D-1 roster but not play a game
 
 ---
 
@@ -829,7 +714,6 @@ It is not equivalent to:
 * BPM
 * RAPM
 * Win Shares
-* or advanced lineup models
 
 ---
 
