@@ -772,3 +772,7 @@ The project ultimately becomes less about “finding the next star” and more a
 > identifying meaningful developmental archetypes and understanding how international youth performance interacts with NCAA basketball environments.
 
 That framing is both more realistic and more analytically valuable.
+
+**Future Improvements / Applications**
+* Adding stats for players who didn't go D1 but did go play pro overseas
+* Using this same pipeline to analyze Nike/Adidas AAU circuits
